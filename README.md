@@ -127,4 +127,74 @@ python convert_all_to_adif.py ALL.TXT \
 
 - 最新リリース: https://github.com/jp1lrt/alltxt2adif/releases/latest
 - `alltxt2adif.exe` — Windows 実行ファイル
+- `checksums.txt` — SHA256 チェックサム
+- `checksums.txt.asc` — GPG 署名
 
+---
+
+## ダウンロードしたバイナリの検証
+
+### VirusTotal スキャン結果
+
+v4.1.1 のスキャン結果:  
+https://www.virustotal.com/gui/file/ab9934ac644535b9d05f0aed428001ab13c02d56f7e7ccd9b221065614869d42/detection
+
+**4 / 70** ベンダーが検出（2026-03-04 時点）
+
+> ⚠️ PyInstaller でビルドされた Python 製 exe は、機械学習ベースのスキャナが  
+> 誤検知することが広く知られています。  
+> ソースコードは本リポジトリで公開されており、自身でビルドして確認することもできます。
+
+### SHA256 チェックサムの確認（PowerShell）
+
+```powershell
+Get-FileHash .\alltxt2adif.exe -Algorithm SHA256
+```
+
+v4.1.1 の正しいハッシュ:
+
+```
+AB9934AC644535B9D05F0AED428001AB13C02D56F7E7CCD9B221065614869D42
+```
+
+出力されたハッシュを `checksums.txt` の値と照合してください。
+
+### GPG 署名の検証
+
+```powershell
+# 公開鍵のインポート
+Invoke-WebRequest -Uri https://github.com/jp1lrt.gpg -OutFile mypubkey.asc
+gpg --import mypubkey.asc
+
+# 署名の検証
+gpg --verify checksums.txt.asc checksums.txt
+```
+
+「正しい署名（Good signature）」と表示され、以下を確認してください：
+
+- 鍵ID: `864FA6445EE4D4E3`
+- UID: `Yoshiharu Tsukuura <jp1lrt@jarl.com>`
+
+---
+
+## ライセンス
+
+GPL v3
+
+---
+
+## 作者
+
+**津久浦 慶治 / Yoshiharu Tsukuura**  
+アマチュア無線局 **JP1LRT** / [@jp1lrt](https://github.com/jp1lrt)
+https://www.qrz.com/db/JP1LRT
+
+---
+
+## Donate
+
+もしこのツールが役に立ったと感じていただけたら、  
+コーヒー代くらいの感覚で応援していただけると今後の開発の励みになります 🪙
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-blue)](https://www.paypal.me/jp1lrt)
+[![Coffee](https://img.shields.io/badge/Coffee-%E2%98%95-yellow)](https://www.paypal.me/jp1lrt)
