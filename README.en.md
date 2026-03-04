@@ -1,77 +1,130 @@
 # ALLTXT2ADIF
 
-**ADIF Log Recovery Tool for WSJT-X / JTDX**
+🛰 **Recover lost FT8 / FT4 logs from WSJT-X or JTDX ALL.TXT**
 
-Reconstructs ADIF logs from `ALL.TXT` decode history when log files have been lost.  
-Analyzes decode messages and rebuilds probable QSOs with confidence tagging.
+If your PC crashed and you lost:
 
-🌐 [日本語はこちら](README.md)
+- `wsjtx_log.adi`
+- `wsjtx.log`
 
----
+…but **ALL.TXT still exists**,  
+this tool can reconstruct many of your QSOs.
 
-## Design Philosophy
+ALLTXT2ADIF analyzes decode history and rebuilds probable QSOs, exporting them as **standard ADIF logs** with confidence tagging.
 
-This tool is not designed to "output everything possible."  
-It is designed to **explain why each QSO is considered valid.**
-
-- Every record receives a **confidence tag (high / medium / low)** based on evidence strength
-- Uncertain QSOs are exported to a separate **review CSV** for human verification
-- This is a **log recovery aid**, not a replacement for official logging software
+🌐 [日本語 README](README.md)
 
 ---
 
-## Features
+# Typical Recovery Scenario
 
-- 🔍 **QSO Recovery** — Rebuild QSOs from ALL.TXT decode history
-- 📋 **ADIF Output** — Standard ADIF format (v3.1.6)
-- 🏷️ **Confidence Tagging** — Three-level evidence classification
-- 📊 **Review CSV** — Export low / medium confidence QSOs for manual review
-- 🔄 **Strict / Lenient Modes** — Control recovery aggressiveness
-- 🖥️ **Windows GUI** — Easy-to-use GUI application (alltxt2adif.exe)
+```
+PC crash
+↓
+wsjtx_log.adi lost
+wsjtx.log lost
+↓
+ALL.TXT still exists
+↓
+Run ALLTXT2ADIF
+↓
+Recovered ADIF log
+```
+
+This situation is more common than many operators expect.
+
+ALLTXT2ADIF was created specifically to help recover logs after such incidents.
 
 ---
 
-## Confidence Tags
+# Design Philosophy
+
+This tool is **not designed to blindly output everything possible.**
+
+Instead, it focuses on **explainable recovery**:
+
+- Every recovered QSO receives a **confidence tag (high / medium / low)**
+- Uncertain QSOs are exported to a **review CSV** for manual verification
+- The tool acts as a **recovery aid**, not a replacement for logging software
+
+The operator remains in control of the final log.
+
+---
+
+# Key Features
+
+🔍 **Recover QSOs from decode history**  
+Reconstruct probable QSOs using message patterns and timing.
+
+📋 **Standard ADIF output**  
+Compatible with logging software, LoTW, eQSL, etc.
+
+🏷 **Confidence tagging**  
+Each recovered QSO includes evidence strength: `high` / `medium` / `low`
+
+📊 **Review CSV**  
+Export uncertain QSOs for manual inspection.
+
+🔄 **Strict / Lenient modes**  
+Choose conservative or aggressive recovery behavior.
+
+🖥 **Simple Windows GUI**  
+Just run the executable — no Python required.
+
+⚙ **CLI version available**  
+Works on Linux / macOS with Python.
+
+---
+
+# Confidence Levels
 
 | confidence | meaning |
 |---|---|
-| `high` | Strong evidence of completed QSO (RR73 received, both RST confirmed, etc.) |
-| `medium` | Likely QSO (one-sided evidence, etc.) |
+| `high` | Strong evidence (RR73 exchange etc.) |
+| `medium` | Likely QSO |
 | `low` | Weak evidence — manual review recommended |
 
 ---
 
-## ALL.TXT Location
+# Example Output
 
-**WSJT-X**
+Recovered ADIF records are sorted chronologically:
+
 ```
-C:\Users\<username>\AppData\Local\WSJT-X\ALL.TXT
+QSO_DATE → TIME_ON
 ```
 
-**JTDX**
+Oldest QSO appears first. Confidence tags are included:
+
 ```
-C:\Users\<username>\AppData\Local\JTDX\ALL.TXT
+APP_ALLTXT2ADIF_CONFIDENCE:high
 ```
+
+This makes it easy to review uncertain records.
 
 ---
 
-## GUI Usage (Windows)
+# GUI Usage (Windows)
 
-1. Launch `alltxt2adif.exe`
-2. Select ALL.TXT
-3. Enter your station callsign
-4. Specify the output ADIF file
-5. Click "Start Recovery"
+1️⃣ Launch `alltxt2adif.exe`  
+2️⃣ Select `ALL.TXT`  
+3️⃣ Enter your callsign  
+4️⃣ Choose output ADIF file  
+5️⃣ Click **Start Recovery**
+
+The GUI builds the correct command automatically.
 
 ---
 
-## CLI Usage
+# CLI Usage
+
+Basic usage:
 
 ```bash
 python convert_all_to_adif.py ALL.TXT -o recovered.adi --station-call YOURCALL
 ```
 
-With review CSV (recommended):
+Recommended (with review CSV):
 
 ```bash
 python convert_all_to_adif.py ALL.TXT \
@@ -82,71 +135,123 @@ python convert_all_to_adif.py ALL.TXT \
 
 ---
 
-## Options
+# Options
 
 | Option | Description |
 |---|---|
 | `--station-call` | Your callsign |
 | `-o` | Output ADIF file |
 | `--mode strict\|lenient` | Recovery mode (default: strict) |
-| `--review-csv` | Export uncertain QSOs to CSV |
-| `--review-level` | Review threshold |
+| `--review-csv` | Export uncertain QSOs |
+| `--review-level` | Confidence threshold for review |
 | `--window-sec N` | Evidence time window in seconds |
 | `--merge-window` | Duplicate merge window |
-| `--no-confidence` | Omit confidence fields from output |
+| `--no-confidence` | Omit confidence fields |
 
 ---
 
-## Known Behavior
+# Known Behavior
 
-- Default time window is **120 seconds** for all modes.  
-  For FT4 or Q65 operation, specify explicitly:
+- Default evidence window is **120 seconds** for all modes.  
+  Override for specific modes:
+
   ```
   --window-sec 60    # FT4
   --window-sec 180   # Q65 / EME
   ```
-- Recovered QSOs are sorted by **QSO_DATE → TIME_ON** ascending (oldest first).
+
+- Recovered QSOs are sorted by **QSO_DATE → TIME_ON** (oldest first).
 
 ---
 
-## Recommended Workflow
+# Location of ALL.TXT
 
-⚠️ **Always review the recovered log before use.**
+**WSJT-X**
 
-Manual verification is especially important for:
+```
+C:\Users\<username>\AppData\Local\WSJT-X\ALL.TXT
+```
 
-- LoTW / eQSL uploads
-- Contest log submissions
+**JTDX**
 
-Using `--review-csv` and inspecting low / medium confidence records is the safest approach.
+```
+C:\Users\<username>\AppData\Local\JTDX\ALL.TXT
+```
 
 ---
 
-## Download
+# Important: Split ALL.TXT Files
 
-Official distribution via GitHub Releases.
+### JTDX
 
-- Latest release: https://github.com/jp1lrt/alltxt2adif/releases/latest
+JTDX automatically **splits ALL.TXT monthly**:
+
+```
+202506_ALL.TXT
+202507_ALL.TXT
+202508_ALL.TXT
+```
+
+Process each file individually.
+
+### WSJT-X
+
+WSJT-X can optionally split ALL.TXT using:
+
+```
+Split ALL.TXT yearly
+Split ALL.TXT monthly
+```
+
+If enabled, process each generated file separately.
+
+---
+
+# Recommended Workflow
+
+⚠ **Always verify recovered logs before uploading.**
+
+Suggested workflow:
+
+1. Run recovery
+2. Import ADIF into your logging software
+3. Inspect `low` and `medium` confidence QSOs
+4. Correct or remove uncertain entries
+
+Especially important before submitting to:
+
+- LoTW
+- eQSL
+- Contest logs
+
+---
+
+# Download
+
+Latest release:  
+https://github.com/jp1lrt/alltxt2adif/releases/latest
+
+Files included:
+
 - `alltxt2adif.exe` — Windows executable
 - `checksums.txt` — SHA256 checksums
 - `checksums.txt.asc` — GPG signature
 
 ---
 
-## Verifying the Downloaded Binary
+# Verifying the Download
 
-### VirusTotal Scan
+### VirusTotal
 
-v4.1.1 scan result:  
+v4.1.1 scan:  
 https://www.virustotal.com/gui/file/ab9934ac644535b9d05f0aed428001ab13c02d56f7e7ccd9b221065614869d42/detection
 
-**4 / 70** vendors flagged (as of 2026-03-04)
+**4 / 70** detections (as of 2026-03-04)
 
-> ⚠️ PyInstaller-packaged Python executables are widely known to trigger  
-> false positives in ML-based scanners.  
-> The full source code is available in this repository — you can build it yourself to verify.
+> ⚠ PyInstaller-built Python executables commonly trigger false positives in ML-based scanners.  
+> Full source code is available in this repository — you can build it yourself.
 
-### SHA256 Checksum Verification (PowerShell)
+### SHA256 Verification (PowerShell)
 
 ```powershell
 Get-FileHash .\alltxt2adif.exe -Algorithm SHA256
@@ -158,43 +263,41 @@ Expected hash for v4.1.1:
 AB9934AC644535B9D05F0AED428001AB13C02D56F7E7CCD9B221065614869D42
 ```
 
-Compare the output with `checksums.txt`.
+Compare with `checksums.txt`.
 
 ### GPG Signature Verification
 
 ```powershell
-# Import public key
 Invoke-WebRequest -Uri https://github.com/jp1lrt.gpg -OutFile mypubkey.asc
 gpg --import mypubkey.asc
-
-# Verify signature
 gpg --verify checksums.txt.asc checksums.txt
 ```
 
-You should see **"Good signature"** with:
+Expected result: **Good signature**
 
 - Key ID: `864FA6445EE4D4E3`
 - UID: `Yoshiharu Tsukuura <jp1lrt@jarl.com>`
 
 ---
 
-## License
+# License
 
 GPL v3
 
 ---
 
-## Author
+# Author
 
-**津久浦 慶治 / Yoshiharu Tsukuura**  
-Amateur Radio Station **JP1LRT** / [@jp1lrt](https://github.com/jp1lrt)
-https://www.qrz.com/db/JP1LRT
+**Yoshiharu Tsukuura — JP1LRT**  
+Amateur Radio Operator  
+https://www.qrz.com/db/JP1LRT  
+https://github.com/jp1lrt
 
 ---
 
-## Donate
+# Support
 
-If this tool has been useful to you, any support is greatly appreciated 🪙
+If this tool helped recover your log, consider buying me a coffee ☕
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-blue)](https://www.paypal.me/jp1lrt)
 [![Coffee](https://img.shields.io/badge/Coffee-%E2%98%95-yellow)](https://www.paypal.me/jp1lrt)
