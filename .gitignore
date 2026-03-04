@@ -1,0 +1,10 @@
+ALL.TXT
+ALL_WSJTX.TXT
+ALL_JTDX.TXT
+JA7QVI_ALL.TXT
+*_ALL.TXT
+build/
+dist/
+__pycache__/
+*.pyc
+alltxt2adif_gui_debug.py
