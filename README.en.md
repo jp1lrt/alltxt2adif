@@ -161,6 +161,7 @@ python convert_all_to_adif.py ALL.TXT \
   ```
 
 - Recovered QSOs are sorted by **QSO_DATE → TIME_ON** (oldest first).
+- FT8 / FT2 and other modes (JT65, JT9, MSK144, etc.) use a 120-second window. Mode-optimized windows are only applied for FT4 (60s) and Q65 (180s).
 
 ---
 
@@ -244,9 +245,9 @@ Files included:
 ### VirusTotal
 
 v4.1.1 scan:  
-https://www.virustotal.com/gui/file/ab9934ac644535b9d05f0aed428001ab13c02d56f7e7ccd9b221065614869d42/detection
+https://www.virustotal.com/gui/file/753879d5e9cead7e5824448720ae99e9664dc29f2c598ed58c0c458c02dc90ce/detection
 
-**4 / 70** detections (as of 2026-03-04)
+**7 / 72** detections (as of 2026-03-05)
 
 > ⚠ PyInstaller-built Python executables commonly trigger false positives in ML-based scanners.  
 > Full source code is available in this repository — you can build it yourself.
@@ -260,7 +261,7 @@ Get-FileHash .\alltxt2adif.exe -Algorithm SHA256
 Expected hash for v4.1.1:
 
 ```
-AB9934AC644535B9D05F0AED428001AB13C02D56F7E7CCD9B221065614869D42
+753879D5E9CEAD7E5824448720AE99E9664DC29F2C598ED58C0C458C02DC90CE
 ```
 
 Compare with `checksums.txt`.
