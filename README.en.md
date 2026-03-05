@@ -14,6 +14,7 @@ ALLTXT2ADIF analyzes decode history and rebuilds probable QSOs, exporting them a
 
 🌐 [日本語 README](README.md)
 
+<img width="822" height="652" alt="image" src="https://github.com/user-attachments/assets/8f11b6ba-7eeb-4b22-b0ee-0f82896fdf4b" />
 ---
 
 # Typical Recovery Scenario
