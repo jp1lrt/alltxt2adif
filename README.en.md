@@ -14,7 +14,6 @@ ALLTXT2ADIF analyzes decode history and rebuilds probable QSOs, exporting them a
 
 🌐 [日本語 README](README.md)
 
-<img width="822" height="652" alt="image" src="https://github.com/user-attachments/assets/8f11b6ba-7eeb-4b22-b0ee-0f82896fdf4b" />
 ---
 
 # Typical Recovery Scenario
@@ -279,6 +278,20 @@ Expected result: **Good signature**
 
 - Key ID: `864FA6445EE4D4E3`
 - UID: `Yoshiharu Tsukuura <jp1lrt@jarl.com>`
+
+---
+
+# Related Tools
+
+Depending on what survived the crash, use the right tool:
+
+| Situation | Tool |
+|---|---|
+| `wsjtx.log` still exists | [WSJT-Log-Utility](https://github.com/jp1lrt/wsjt-log-utility) |
+| Only `ALL.TXT` remains | **ALLTXT2ADIF** (this tool) |
+
+Together, these two tools cover most log recovery scenarios.
+Hopefully you'll never need either of them.
 
 ---
 
